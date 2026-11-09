@@ -49,11 +49,47 @@ pipeline {
                 '''
             }
         }
+
+        stage('Push Images to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'DOCKERHUB_USER',
+                    passwordVariable: 'DOCKERHUB_TOKEN'
+                )]) {
+                    sh '''
+                        set +x
+                        set -e
+
+                        echo "$DOCKERHUB_TOKEN" | docker login \
+                            -u "$DOCKERHUB_USER" \
+                            --password-stdin
+
+                        for service in user-service product-service order-service payment-service
+                        do
+                            echo "Pushing $service"
+
+                            docker tag "$service:$BUILD_NUMBER" \
+                                "$DOCKERHUB_USER/$service:$BUILD_NUMBER"
+
+                            docker push "$DOCKERHUB_USER/$service:$BUILD_NUMBER"
+
+                            docker tag "$service:$BUILD_NUMBER" \
+                                "$DOCKERHUB_USER/$service:latest"
+
+                            docker push "$DOCKERHUB_USER/$service:latest"
+                        done
+
+                        docker logout
+                    '''
+                }
+            }
+        }
     }
 
     post {
         success {
-            echo 'All microservices built and Docker images created successfully!'
+            echo 'All microservices built and pushed to Docker Hub successfully!'
         }
 
         failure {
@@ -61,3 +97,4 @@ pipeline {
         }
     }
 }
+
