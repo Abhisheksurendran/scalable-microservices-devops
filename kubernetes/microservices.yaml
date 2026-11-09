@@ -1,3 +1,4 @@
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -14,8 +15,8 @@ spec:
     spec:
       containers:
         - name: user-service
-          image: user-service:v1
-          imagePullPolicy: IfNotPresent
+          image: amabk7/user-service:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8081
           env:
@@ -55,8 +56,8 @@ spec:
     spec:
       containers:
         - name: product-service
-          image: product-service:v1
-          imagePullPolicy: IfNotPresent
+          image: amabk7/product-service:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8082
           env:
@@ -96,8 +97,8 @@ spec:
     spec:
       containers:
         - name: order-service
-          image: order-service:v1
-          imagePullPolicy: IfNotPresent
+          image: amabk7/order-service:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8083
           env:
@@ -137,8 +138,8 @@ spec:
     spec:
       containers:
         - name: payment-service
-          image: payment-service:v1
-          imagePullPolicy: IfNotPresent
+          image: amabk7/payment-service:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8084
           env:
@@ -161,3 +162,4 @@ spec:
     - port: 80
       targetPort: 8084
   type: ClusterIP
+
