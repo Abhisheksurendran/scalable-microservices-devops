@@ -1,0 +1,43 @@
+---
+- name: Configure DevOps project server
+  hosts: project_servers
+  become: true
+
+  tasks:
+    - name: Update Ubuntu package cache
+      apt:
+        update_cache: yes
+
+    - name: Install Java, Maven, Git and Docker
+      apt:
+        name:
+          - openjdk-21-jdk
+          - maven
+          - git
+          - docker.io
+        state: present
+
+    - name: Start and enable Docker
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Add Ubuntu user to Docker group
+      user:
+        name: ubuntu
+        groups: docker
+        append: yes
+
+    - name: Display installed tool versions
+      shell: |
+        java -version 2>&1
+        mvn -version 2>&1
+        git --version 2>&1
+        docker --version 2>&1
+      register: tool_versions
+      changed_when: false
+
+    - name: Show installed tool versions
+      debug:
+        var: tool_versions.stdout_lines

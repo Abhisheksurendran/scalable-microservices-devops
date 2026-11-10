@@ -13,3 +13,24 @@
 
 # OS files
 .DS_Store
+
+
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# AWS credentials and private keys
+.aws/
+*.pem
+
+
+# Ansible - local inventory contains server IP and SSH key path
+ansible/inventory/hosts.ini
